@@ -113,7 +113,7 @@ fi
 
 if ! "$SKIP_DOWNLOAD"; then
     echo "[setup] downloading language images and benchmark data"
-    bash "$ROOT/download_scaffold.sh"
+    PYTHON="$VENV_PYTHON" bash "$ROOT/download_scaffold.sh"
 fi
 
 echo
