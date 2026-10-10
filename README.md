@@ -16,21 +16,21 @@
   <img alt="Languages" src="https://img.shields.io/badge/languages-12-7B61FF?style=flat-square">
 </p>
 
-## 本 fork 的修正记录
+## Fixes in this fork
 
-用于修复 `realcode@005`（django-cart）的需求澄清阻碍。属于修改题库后的开发对照，结果需与官方原版区分。
+These fixes address requirement clarification blockers in `realcode@005` (django-cart). Results using the corrected data must be distinguished from results on the official release.
 
-| 遇到的问题 | 我们的修改 | 范围 / 验证 |
+| Observed issue | Change | Scope / validation |
 |---|---|---|
-| 问程序如何调用，Oracle 要求顶层 `action`；Public 输入实际是 `products` + `operations[].op` | 按顺序分派 `op`，删除无关的时间单位说明 | normal / medium；easy 补齐同一接口问答；核对所有 Public 输入 |
-| `C006` 默认 `public_test_cases`，`HARNESS002` 默认 `test_cases` | 统一默认 `public_test_cases`，保留显式 `--cases-dir` | 三个难度；输出仍按目录、文件和 case 索引命名 |
-| 未启用 `--scaffold` 时，fallback 仍让 agent 查看不存在的 Public 文件 | 明确可按 feature 请求 JSON，由 agent 自行保存；未知问题明确回答未记录 | 三个难度；保持 `--scaffold` 默认关闭 |
-| 问“同商品重复 add”却得到 fallback，无法确认数量和单价规则 | 根据原始 `Cart.add()` 补齐可询问的行为契约 | 三个难度；执行原始方法验证；不新增或公开隐藏测试 |
-| easy 的两个回答为空、API 签名为空，排序指针写成字典序，且缺少 Public JSON 问答 | 从已有 PRD 补齐回答和签名；统一数值 ID 排序；复用记录中的 Public JSON | easy；Public JSON 逐项比对，不改 initial PRD |
+| When asked how to invoke the program, the Oracle required a top-level `action`; Public inputs use `products` + `operations[].op` | Dispatch each `op` in order and remove unrelated time-unit instructions | normal / medium; add matching interface guidance for easy; check all Public inputs |
+| `C006` defaults to `public_test_cases`, while `HARNESS002` defaults to `test_cases` | Use `public_test_cases` consistently while retaining explicit `--cases-dir` | All difficulties; preserve output naming by directory, file and case index |
+| Without `--scaffold`, the fallback still directs agents to Public files that are not present | Explain how to request JSON by feature and save it locally; explicitly acknowledge undocumented answers | All difficulties; `--scaffold` remains disabled by default |
+| Questions about adding the same product twice receive the fallback, leaving quantity and price rules unclear | Add a queryable behavior contract grounded in the original `Cart.add()` | All difficulties; execute the original method to verify behavior; do not add or publish hidden tests |
+| easy has two empty answers, an empty API signature, a lexicographic sorting pointer and no Public JSON answers | Fill answers and the signature from the existing PRD, use numeric ID ordering and reuse the record's Public JSON | easy; compare Public JSON exactly; preserve the initial PRD |
 
-原始行为依据：[django-cart 的历史实现](https://github.com/bmentges/django-cart/blob/1f82b1fe7f69e89b00bdc64563ced96a4314d32b/cart/cart.py#L37)。仅修正 Oracle 数据；Public / Native / Enhanced 用例、评分器、提问额度和回复规则保持原样。
+Behavior reference: [django-cart's historical implementation](https://github.com/bmentges/django-cart/blob/1f82b1fe7f69e89b00bdc64563ced96a4314d32b/cart/cart.py#L37). Only Oracle data is corrected; Public / Native / Enhanced cases, graders, query limits and reply rules remain unchanged.
 
-`setup.sh` 下载后自动套用修正。已有下载可以手动执行：
+`setup.sh` applies the corrections automatically after downloading. For existing downloads, run:
 
 ```bash
 python3 tools/repair_django_cart.py
@@ -38,9 +38,9 @@ python3 tools/repair_django_cart.py --check
 python3 -m unittest discover -s tests -v
 ```
 
-题库在其他目录时使用 `--root /path/to/prd-bundle`，测试设置 `ICAE_TEST_PRD_ROOT` 为同一路径。原始方法验证另需 `ICAE_TEST_GOLDEN_CART=/path/to/original/cart/cart.py`（上述历史版本）。未下载数据的测试会显示 skipped；这不代表验证通过。
+For data stored elsewhere, pass `--root /path/to/prd-bundle` and set `ICAE_TEST_PRD_ROOT` to the same path for tests. Verifying the original method also requires `ICAE_TEST_GOLDEN_CART=/path/to/original/cart/cart.py` from the historical version linked above. Tests without the required data report skipped; this does not count as successful validation.
 
-修正工具核对原始及修正后的 SHA-256，可重复运行；遇到新版或被修改的数据会拒绝覆盖。数据仍保留在原有 Git 忽略目录，只提交修正工具与测试。已在官方发布包上完成离线验证，尚未重跑真实模型。
+The repair tool checks the original and corrected SHA-256 hashes, supports repeated runs and refuses to overwrite unreviewed data. Dataset files remain in the existing Git-ignored directories; only the repair tool and tests are committed. Offline validation against the official release bundle is complete; real-model evaluation has not been rerun.
 
 ## 🔥 What's News
 
