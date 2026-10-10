@@ -9,7 +9,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
-for command_name in docker curl tar lz4; do
+for command_name in docker curl tar lz4 "${PYTHON:-python3}"; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
         echo "[download] missing command: $command_name" >&2
         exit 1
@@ -150,5 +150,9 @@ else
         exit 1
     fi
 fi
+
+# Apply this fork's reviewed task corrections, including on restart when the
+# downloaded PRD bundle is already present. Unknown release hashes fail closed.
+"${PYTHON:-python3}" "$ROOT/tools/repair_django_cart.py"
 
 echo "[download] all language images and benchmark data are ready."
