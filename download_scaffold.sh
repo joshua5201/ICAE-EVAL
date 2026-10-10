@@ -152,7 +152,8 @@ else
 fi
 
 # Apply this fork's reviewed task corrections, including on restart when the
-# downloaded PRD bundle is already present. Unknown release hashes fail closed.
+# downloaded bundles are already present. Unknown release hashes fail closed.
 "${PYTHON:-python3}" "$ROOT/tools/repair_django_cart.py"
+"${PYTHON:-python3}" "$ROOT/tools/repair_django_cart_grader.py"
 
 echo "[download] all language images and benchmark data are ready."

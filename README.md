@@ -18,7 +18,7 @@
 
 ## Fixes in this fork
 
-These fixes address requirement clarification blockers in `realcode@005` (django-cart). Results using the corrected data must be distinguished from results on the official release.
+These fixes address requirement clarification blockers and inconsistent empty-total grading in `realcode@005` (django-cart). Results using the corrected data must be distinguished from results on the official release.
 
 | Observed issue | Change | Scope / validation |
 |---|---|---|
@@ -27,20 +27,22 @@ These fixes address requirement clarification blockers in `realcode@005` (django
 | Without `--scaffold`, the fallback still directs agents to Public files that are not present | Explain how to request JSON by feature and save it locally; explicitly acknowledge undocumented answers | All difficulties; `--scaffold` remains disabled by default |
 | Questions about adding the same product twice receive the fallback, leaving quantity and price rules unclear | Add a queryable behavior contract grounded in the original `Cart.add()` | All difficulties; execute the original method to verify behavior; do not add or publish hidden tests |
 | easy has two empty answers, an empty API signature, a lexicographic sorting pointer and no Public JSON answers | Fill answers and the signature from the existing PRD, use numeric ID ordering and reuse the record's Public JSON | easy; compare Public JSON exactly; preserve the initial PRD |
+| Enhanced grading expects `total=0` for empty carts, but the Oracle requires two decimal places for all money | Change empty-total expected lines to `total=0.00` | 9 cases in 5 Enhanced files; inputs, counts and other output remain unchanged |
 
-Behavior reference: [django-cart's historical implementation](https://github.com/bmentges/django-cart/blob/1f82b1fe7f69e89b00bdc64563ced96a4314d32b/cart/cart.py#L37). Only Oracle data is corrected; Public / Native / Enhanced cases, graders, query limits and reply rules remain unchanged.
+Behavior reference: [django-cart's historical implementation](https://github.com/bmentges/django-cart/blob/1f82b1fe7f69e89b00bdc64563ced96a4314d32b/cart/cart.py#L37). Oracle data and the specified Enhanced expected-output lines are corrected. Public / Native cases, the exact comparator, query limits and reply rules remain unchanged.
 
 `setup.sh` applies the corrections automatically after downloading. For existing downloads, run:
 
 ```bash
 python3 tools/repair_django_cart.py
 python3 tools/repair_django_cart.py --check
+python3 tools/repair_django_cart_grader.py
 python3 -m unittest discover -s tests -v
 ```
 
 For data stored elsewhere, pass `--root /path/to/prd-bundle` and set `ICAE_TEST_PRD_ROOT` to the same path for tests. Verifying the original method also requires `ICAE_TEST_GOLDEN_CART=/path/to/original/cart/cart.py` from the historical version linked above. Tests without the required data report skipped; this does not count as successful validation.
 
-The repair tool checks the original and corrected SHA-256 hashes, supports repeated runs and refuses to overwrite unreviewed data. Dataset files remain in the existing Git-ignored directories; only the repair tool and tests are committed. Offline validation against the official release bundle is complete; real-model evaluation has not been rerun.
+Both repair tools check the original and corrected SHA-256 hashes, support repeated runs and refuse to overwrite unreviewed data. Dataset files remain in the existing Git-ignored directories. The grader correction adds no tests; its diff is limited to the nine expected-output lines. Real-model evaluation with the corrected grader has not been run.
 
 ## 🔥 What's News
 
